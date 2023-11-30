@@ -115,6 +115,7 @@ def pregunta_05():
     Evalúe el modelo obtenido.
     """
 
+
     # Cargue las variables
     X_train, X_test, y_train, y_test = pregunta_02()
 
