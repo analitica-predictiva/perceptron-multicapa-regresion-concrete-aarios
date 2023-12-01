@@ -9,6 +9,7 @@ https://jdvelasq.github.io/courses/notebooks/sklearn_supervised_10_neural_networ
 """
 
 import pandas as pd
+#importamos las librerías globales para no importarlas más de una vez
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import GridSearchCV, train_test_split
 from sklearn import datasets
@@ -24,20 +25,19 @@ def pregunta_01():
     Carga y separación de los datos en `X` `y`
     """
     # Lea el archivo `concrete.csv` y asignelo al DataFrame `df`
-    df = pd.read_csv("concrete.csv")
+    df = pd.read_csv("concrete.csv")  
 
     # Asigne la columna `strength` a la variable `y`.
-    y = df["strength"]
+    y = df["strength"]  
 
     # Asigne una copia del dataframe `df` a la variable `X`.
-    X = df.copy()
+    X = df.copy() 
 
     # Remueva la columna `strength` del DataFrame `X`.
-    X.drop(["strength"], axis=1, inplace=True)
+    X.drop(["strength"], axis=1, inplace=True) 
 
     # Retorne `X` y `y`
     return X, y
-
 
 
 def pregunta_02():
@@ -45,16 +45,25 @@ def pregunta_02():
     Preparación del dataset.
     """
 
+    # Importe train_test_split
+    #from ____ import ____
+
     # Cargue los datos de ejemplo y asigne los resultados a `X` y `y`.
     X, y = pregunta_01()
 
-    # Divida los datos de entrenamiento y prueba
-    X_train, X_test, y_train, y_test = train_test_split(
-        X,
-        y,
-        test_size=0.25,
-        random_state=12453,
-    )
+    # Divida los datos de entrenamiento y prueba. La semilla del generador de números
+    # aleatorios es 12453. Use el 75% de los patrones para entrenamiento.
+    (  
+        X_train,  
+        X_test,  
+        y_train,  
+        y_test,  
+    ) = train_test_split(  
+        X,  
+        y,  
+        test_size=0.25,  
+        random_state=12453,  
+    )  
 
     # Retorne `X_train`, `X_test`, `y_train` y `y_test`
     return X_train, X_test, y_train, y_test
@@ -65,7 +74,13 @@ def pregunta_03():
     Construcción del pipeline
     """
 
-    # Cree un pipeline
+    # Importe MLPRegressor
+    # Importe MinMaxScaler
+    # Importe Pipeline
+    #from ____ import ____
+
+    # Cree un pipeline que contenga un estimador MinMaxScaler y un estimador
+    # MLPRegressor
     pipeline = Pipeline(
         steps=[
             (
@@ -88,6 +103,19 @@ def pregunta_04():
     Creación de la malla de búsqueda
     """
 
+    # Importe GridSearchCV
+    from sklearn.model_selection import GridSearchCV
+
+    # Cree una malla de búsqueda para el objecto GridSearchCV
+    # con los siguientes parámetros de búesqueda:
+    #   * De 1 a 8 neuronas en la capa oculta
+    #   * Activación con la función `relu`.
+    #   * Tasa de aprendizaje adaptativa
+    #   * Momentun con valores de 0.7, 0.8 y 0.9
+    #   * Tasa de aprendijzaje inicial de 0.01, 0.05, 0.1
+    #   * Un máximo de 5000 iteraciones
+    #   * Use parada temprana
+
     param_grid = {
         "mlpregressor__hidden_layer_sizes": [(i,) for i in range(1, 9)],
         "mlpregressor__activation": ["relu"],
@@ -100,11 +128,15 @@ def pregunta_04():
 
     estimator = pregunta_03()
 
+    # Especifique un objeto GridSearchCV con el pipeline y la malla de búsqueda,
+    # y los siguientes parámetros adicionales:
+    #  * Validación cruzada con 5 particiones
+    #  * Compare modelos usando r^2
     gridsearchcv = GridSearchCV(
         estimator=estimator,
         param_grid=param_grid,
-        cv=5,
-        scoring="r2"
+        cv = 5, 
+        scoring = "r2"
     )
 
     return gridsearchcv
@@ -112,26 +144,34 @@ def pregunta_04():
 
 def pregunta_05():
     """
-    Evalúe el modelo obtenido.
+    Evalue el modelo obtenido.
     """
 
+    # Importe mean_squared_error
+    #from ____ import ____
 
-    # Cargue las variables
+    # Cargue las variables.
     X_train, X_test, y_train, y_test = pregunta_02()
 
     # Obtenga el objeto GridSearchCV
     estimator = pregunta_04()
 
     # Entrene el estimador
-    estimator.fit(X_train, y_train)
+    estimator.fit(X_train, y_train)  #
 
-    # Pronostique para las muestras de entrenamiento y validación
+    # Pronostique para las muestras de entrenamiento y validacion
     y_train_pred = estimator.predict(X_train)
     y_test_pred = estimator.predict(X_test)
 
-    # Calcule el error cuadrático medio
-    mse_train = mean_squared_error(y_train, y_train_pred)
-    mse_test = mean_squared_error(y_test, y_test_pred)
+    # Calcule el error cuadrático medio de las muestras
+    mse_train = mean_squared_error(  
+        y_train,  
+        y_train_pred,  
+    )
+    mse_test = mean_squared_error(  
+        y_test,  
+        y_test_pred,  
+    )
 
     # Retorne el mse de entrenamiento y prueba
     return mse_train, mse_test
